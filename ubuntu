@@ -1,0 +1,79 @@
+---
+- name: config software repository
+  hosts: ubuntu
+  tasks:
+          - name: check if repolfilebak is exists
+            stat:
+                    path: /etc/apt/sources.list.bak
+            register: file_check
+
+          - name: backup apt sources list
+            ansible.builtin.copy:
+                    src: /etc/apt/sources.list
+                    dest: /etc/apt/sources.list.bak
+                    remote_src: yes
+            when: not file_check.stat.exists
+          - debug:
+                  msg: "file already exists"
+            when: file_check.stat.exists
+
+          - name: replace the repository
+            replace:
+                    path: /etc/apt/sources.list
+                    regexp: 'http://cn.archive.ubuntu.com/ubuntu'
+                    replace: 'http://mirrors.tuna.tsinghua.edu.cn/ubuntu/'
+          - name: update the repository
+            shell: 'apt-get -y update && apt-get -y upgrade'      //upgrade视具体情况而定
+
+- name: install software
+  hosts: ubuntu
+  tasks:
+          - name: install unzip
+            ansible.builtin.apt:
+                    name: unzip
+                    state: present
+
+          - name: install curl
+            ansible.builtin.apt:
+                    name: curl
+                    state: present
+
+          - name: install wget
+            ansible.builtin.apt:
+                    name: wget
+                    state: present
+
+          - name: install vim
+            ansible.builtin.apt:
+                    name: vim
+                    state: present
+
+          - name: install bzip2
+            ansible.builtin.apt:
+                    name: bzip2
+                    state: present
+
+          - name: install net-tools
+            ansible.builtin.apt:
+                    name: net-tools
+                    state: present
+
+          - name: install telnet
+            ansible.builtin.apt:
+                    name: telnet
+                    state: present
+
+          - name: install bash-completion
+            ansible.builtin.apt:
+                    name: bash-completion
+                    state: present
+
+          - name: install traceroute
+            ansible.builtin.apt:
+                    name: traceroute
+                    state: present
+
+          - name: install rsync
+            ansible.builtin.apt:
+                    name: bzip2
+                    state: present
